@@ -1,8 +1,8 @@
-import taskManager.TaskManager;
-import taskModel.Epic;
-import taskModel.Status;
-import taskModel.SubTask;
-import taskModel.Task;
+import manager.TaskManager;
+import model.Epic;
+import model.Status;
+import model.SubTask;
+import model.Task;
 
 public class Main {
 
@@ -61,7 +61,7 @@ public class Main {
 
         System.out.println("Обновление эпика по id");
         manager.addEpic(epic1);
-        Epic updateEpic = new Epic(epic1.getId(), "Обновленный эпик", "Обновленный эпик", epic1.getSubTasks());
+        Epic updateEpic = new Epic(epic1.getId(), "Обновленный эпик", "Обновленный эпик", epic1.getIdSubTasks());
         manager.updateEpic(updateEpic);
         System.out.println(manager.getEpicById(epic1.getId()));
         System.out.println();

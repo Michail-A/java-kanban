@@ -1,11 +1,11 @@
-package taskModel;
+package model;
 
 import java.util.Objects;
 
 public class Task {
     private int id;
-    private final String title;
-    private final String description;
+    private String title;
+    private String description;
     private Status status;
 
     public Task(String title, String description) {
@@ -49,6 +49,14 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
