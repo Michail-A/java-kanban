@@ -21,45 +21,22 @@ public class Epic extends Task {
         idSubTasks.add(subTask.getId());
     }
 
-    public void updateStatus(List<SubTask> subTasks) {
-        if (idSubTasks.isEmpty()) {
-            setStatus(Status.NEW);
-            return;
-        }
-        int countDoneSubTasks = 0;
-        int countNewSubTasks = 0;
-        for (SubTask subTask : subTasks) {
-            if (subTask.getStatus().equals(Status.DONE)) {
-                countDoneSubTasks++;
-            }
-            if (subTask.getStatus().equals(Status.NEW)) {
-                countNewSubTasks++;
-            }
-        }
-        if (countDoneSubTasks == idSubTasks.size()) {
-            setStatus(Status.DONE);
-        } else if (countNewSubTasks == idSubTasks.size()) {
-            setStatus(Status.NEW);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
-    }
-
     public void updateSubTask(SubTask newSubTask, SubTask oldSubTask) {
         idSubTasks.remove((Integer) oldSubTask.getId());
         idSubTasks.add((Integer) newSubTask.getId());
     }
 
     public void deleteSubTask(SubTask subTask) {
-        idSubTasks.remove(subTask.getId());
+        idSubTasks.remove((Integer) subTask.getId());
     }
 
     public List<Integer> getIdSubTasks() {
         return idSubTasks;
     }
 
-    public void setIdSubTasks(List<Integer> idSubTasks) {
-        this.idSubTasks = idSubTasks;
+    public void removeAllSubTasks() {
+        idSubTasks = new ArrayList<>();
+        setStatus(Status.NEW);
     }
 
     @Override

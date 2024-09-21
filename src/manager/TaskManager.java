@@ -1,6 +1,7 @@
 package manager;
 
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
 
@@ -39,8 +40,7 @@ public class TaskManager {
     public void deleteSubTasks() {
         subTasks.clear();
         for (Epic epic : epics.values()) {
-            epic.setIdSubTasks(new ArrayList<>());
-            epic.updateStatus(getSubTasksByEpicId(id));
+            epic.removeAllSubTasks();
         }
     }
 
@@ -78,7 +78,7 @@ public class TaskManager {
         id++;
         Epic epic = epics.get(subTask.getEpicId());
         epic.addSubTask(subTask);
-        epic.updateStatus(getSubTasksByEpicId(epic.getId()));
+        updateEpicStatus(epic);
     }
 
     public void updateTask(Task task) {
@@ -89,7 +89,7 @@ public class TaskManager {
         Epic updatedEpic = epics.get(epic.getId());
         updatedEpic.setTitle(epic.getTitle());
         updatedEpic.setDescription(epic.getDescription());
-        updatedEpic.updateStatus(getSubTasksByEpicId(epic.getId()));
+        updateEpicStatus(epic);
     }
 
     public void updateSubtask(SubTask subTask) {
@@ -97,7 +97,7 @@ public class TaskManager {
         subTasks.put(subTask.getId(), subTask);
         Epic epic = epics.get(subTask.getEpicId());
         epic.updateSubTask(subTask, oldSubTask);
-        epic.updateStatus(getSubTasksByEpicId(epic.getId()));
+        updateEpicStatus(epic);
     }
 
     public void deleteTaskById(int id) {
@@ -116,7 +116,7 @@ public class TaskManager {
         Epic epic = epics.get(subTasks.get(id).getEpicId());
         epic.deleteSubTask(subTasks.get(id));
         subTasks.remove(id);
-        epic.updateStatus(getSubTasksByEpicId(epic.getId()));
+        updateEpicStatus(epic);
     }
 
     public List<SubTask> getSubTasksByEpicId(int id) {
@@ -127,5 +127,26 @@ public class TaskManager {
             }
         }
         return subTasksByEpic;
+    }
+
+    private void updateEpicStatus(Epic epic) {
+        int countDoneSubTasks = 0;
+        int countNewSubTasks = 0;
+        for (Integer idSubTask : epic.getIdSubTasks()) {
+            SubTask subTask = subTasks.get(idSubTask);
+            if (subTask.getStatus().equals(Status.DONE)) {
+                countDoneSubTasks++;
+            }
+            if (subTask.getStatus().equals(Status.NEW)) {
+                countNewSubTasks++;
+            }
+        }
+        if (countDoneSubTasks == epic.getIdSubTasks().size()) {
+            epic.setStatus(Status.DONE);
+        } else if (countNewSubTasks == epic.getIdSubTasks().size()) {
+            epic.setStatus(Status.NEW);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
+        }
     }
 }
