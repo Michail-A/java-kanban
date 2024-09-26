@@ -1,6 +1,5 @@
-package modelTest;
+package model;
 
-import model.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

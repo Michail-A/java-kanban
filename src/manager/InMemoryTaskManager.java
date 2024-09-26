@@ -149,17 +149,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getSubTasksByEpicId(int id) {
+        List<Integer> subTasksIdByEpic = epics.get(id).getIdSubTasks();
         List<SubTask> subTasksByEpic = new ArrayList<>();
-        for (SubTask subTask : subTasks.values()) {
-            if (subTask.getEpicId() == id) {
-                subTasksByEpic.add(subTask);
-            }
+        for (Integer idSubTask : subTasksIdByEpic) {
+            subTasksByEpic.add(subTasks.get(idSubTask));
         }
         return subTasksByEpic;
     }
 
-    @Override
+
     public void updateEpicStatus(Epic epic) {
+        if (epic.getIdSubTasks().isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
         int countDoneSubTasks = 0;
         int countNewSubTasks = 0;
         for (Integer idSubTask : epic.getIdSubTasks()) {
@@ -171,6 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
                 countNewSubTasks++;
             }
         }
+
         if (countDoneSubTasks == epic.getIdSubTasks().size()) {
             epic.setStatus(Status.DONE);
         } else if (countNewSubTasks == epic.getIdSubTasks().size()) {

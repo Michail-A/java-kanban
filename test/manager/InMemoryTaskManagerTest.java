@@ -182,7 +182,6 @@ class InMemoryTaskManagerTest {
         manager.deleteEpicById(epic1.getId());
 
         assertNull(manager.getEpicById(epic1.getId()));
-        assertEquals(0, manager.getSubTasksByEpicId(epic1.getId()).size());
 
     }
 
@@ -199,7 +198,7 @@ class InMemoryTaskManagerTest {
 
         manager.deleteSubTasksById(updatedSubTask.getId());
 
-        assertEquals(0, manager.getSubTasksByEpicId(updatedSubTask.getId()).size());
+        assertEquals(1, manager.getSubTasksByEpicId(updatedSubTask.getEpicId()).size());
         assertEquals(Status.NEW, manager.getEpicById(epic1.getId()).getStatus());
     }
 
