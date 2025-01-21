@@ -29,17 +29,25 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void writeHistory() {
+    void add() {
         taskManager.getTaskById(task.getId());
-
         assertEquals(1, historyManager.getHistory().size());
 
         taskManager.getEpicById(epic.getId());
         assertEquals(2, historyManager.getHistory().size());
 
         taskManager.getSubTaskById(subTask.getId());
-
         assertEquals(3, historyManager.getHistory().size());
+
+        taskManager.getTaskById(task.getId());
+        assertEquals(3, historyManager.getHistory().size());
+        assertEquals(task, historyManager.getHistory().get(2));
     }
 
+    @Test
+    void remove() {
+        taskManager.getTaskById(task.getId());
+        historyManager.remove(task.getId());
+        assertEquals(0, historyManager.getHistory().size());
+    }
 }
