@@ -223,4 +223,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected void setId(int id) {
         this.id = id;
     }
+
+    protected int getId() {
+        return id;
+    }
 }

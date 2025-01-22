@@ -4,13 +4,13 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+import util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +18,20 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private static final Path DATA = Paths.get("src/data.csv");
-    private static final Path DATA_HISTORY = Paths.get("src/data_history.csv");
+    private final Path data;
+
+    private final Path dataHistory;
 
     public FileBackedTaskManager(HistoryManager historyManager) {
         super(historyManager);
+        data = Constants.DATA;
+        dataHistory = Constants.DATA_HISTORY;
+    }
+
+    public FileBackedTaskManager(HistoryManager historyManager, Path data, Path dataHistory) {
+        super(historyManager);
+        this.data = data;
+        this.dataHistory = dataHistory;
     }
 
     private String taskToString(Task task) {
@@ -92,10 +101,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void save() {
+    private void save() {
         String tittle = "id,type,title,status,description,epicId";
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATA.toFile()));
-             BufferedWriter bwHistory = new BufferedWriter(new FileWriter(DATA_HISTORY.toFile()))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(data.toFile()));
+             BufferedWriter bwHistory = new BufferedWriter(new FileWriter(dataHistory.toFile()))) {
             bw.write(tittle + "\n");
             for (Task task : super.getTasks()) {
                 bw.write(taskToString(task) + "\n");
