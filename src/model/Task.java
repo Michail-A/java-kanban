@@ -1,5 +1,7 @@
 package model;
 
+import manager.TypeTask;
+
 import java.util.Objects;
 
 public class Task {
@@ -14,7 +16,7 @@ public class Task {
         this.status = Status.NEW;
     }
 
-    public Task(String title, String description, int id, Status status) {
+    public Task(int id, String title, String description, Status status) {
         this.title = title;
         this.description = description;
         this.id = id;
@@ -57,6 +59,10 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public TypeTask getTypeTask() {
+        return TypeTask.TASK;
     }
 
     @Override

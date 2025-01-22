@@ -40,13 +40,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node oldTail = tail;
         Node newNode = new Node(task, oldTail, null);
         tail = newNode;
-        if (oldTail == null)
+        if (oldTail == null) {
             head = newNode;
-        else
+        } else {
             oldTail.next = newNode;
-
+        }
         return newNode;
     }
+
 
     private List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
@@ -75,7 +76,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             next.prev = prev;
             node.prev = null;
         }
-        node = null;
     }
 
     private class Node {

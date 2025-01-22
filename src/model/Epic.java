@@ -1,5 +1,7 @@
 package model;
 
+import manager.TypeTask;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,12 @@ public class Epic extends Task {
     public Epic(int id, String title, String description, List<Integer> idSubTasks) {
         super(id, title, description);
         this.idSubTasks = idSubTasks;
+
+    }
+
+    public Epic(int id, String title, String description) {
+        super(id, title, description);
+        idSubTasks = new ArrayList<>();
 
     }
 
@@ -37,6 +45,11 @@ public class Epic extends Task {
     public void removeAllSubTasks() {
         idSubTasks = new ArrayList<>();
         setStatus(Status.NEW);
+    }
+
+    @Override
+    public TypeTask getTypeTask() {
+        return TypeTask.EPIC;
     }
 
     @Override

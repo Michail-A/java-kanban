@@ -166,7 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-    public void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatus(Epic epic) {
         if (epic.getIdSubTasks().isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
@@ -196,5 +196,31 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer id : ids) {
             historyManager.remove(id);
         }
+    }
+
+    protected List<Integer> getHistoryIds() {
+        List<Integer> historyIds = new ArrayList<>();
+        for (Task task : historyManager.getHistory()) {
+            historyIds.add(task.getId());
+        }
+        return historyIds;
+    }
+
+    protected void putInMaps(Task task) {
+        switch (task.getTypeTask()) {
+            case TASK:
+                tasks.put(task.getId(), task);
+                break;
+            case EPIC:
+                epics.put(task.getId(), (Epic) task);
+                break;
+            case SUBTASK:
+                subTasks.put(task.getId(), (SubTask) task);
+                break;
+        }
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 }

@@ -116,7 +116,7 @@ class InMemoryTaskManagerTest {
     @Test
     void updateTask() {
         manager.addTask(task1);
-        Task updatedTask = new Task("update", "update", task1.getId(), Status.IN_PROGRESS);
+        Task updatedTask = new Task(task1.getId(), "update", "update", Status.IN_PROGRESS);
         manager.updateTask(updatedTask);
         Task task = manager.getTaskById(task1.getId());
 
@@ -144,7 +144,7 @@ class InMemoryTaskManagerTest {
         subTask2 = new SubTask("test2", "test2", epic1.getId());
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
-        SubTask updatedSubTask = new SubTask("update", "update", subTask1.getId(), Status.IN_PROGRESS,
+        SubTask updatedSubTask = new SubTask(subTask1.getId(), "update", "update", Status.IN_PROGRESS,
                 epic1.getId());
         manager.updateSubtask(updatedSubTask);
 
@@ -155,8 +155,8 @@ class InMemoryTaskManagerTest {
         assertEquals(updatedSubTask.getStatus(), subTask.getStatus());
         assertEquals(Status.IN_PROGRESS, manager.getEpicById(epic1.getId()).getStatus());
 
-        updatedSubTask = new SubTask("update", "update", subTask1.getId(), Status.DONE, epic1.getId());
-        SubTask updatedSubTask2 = new SubTask("update", "update", subTask2.getId(), Status.DONE,
+        updatedSubTask = new SubTask(subTask1.getId(), "update", "update", Status.DONE, epic1.getId());
+        SubTask updatedSubTask2 = new SubTask(subTask2.getId(), "update", "update", Status.DONE,
                 epic1.getId());
         manager.updateSubtask(updatedSubTask);
         manager.updateSubtask(updatedSubTask2);
@@ -192,7 +192,7 @@ class InMemoryTaskManagerTest {
         subTask2 = new SubTask("test2", "test2", epic1.getId());
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
-        SubTask updatedSubTask = new SubTask("update", "update", subTask1.getId(), Status.IN_PROGRESS,
+        SubTask updatedSubTask = new SubTask(subTask1.getId(), "update", "update", Status.IN_PROGRESS,
                 epic1.getId());
         manager.updateSubtask(updatedSubTask);
 
