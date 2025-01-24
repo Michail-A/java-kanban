@@ -87,4 +87,9 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
+
+    public String toStringForSave() {
+        return id + "," + getTypeTask() + "," + title + "," + status
+                + "," + description;
+    }
 }

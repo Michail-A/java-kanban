@@ -34,16 +34,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.dataHistory = dataHistory;
     }
 
-    private String taskToString(Task task) {
-        String line = task.getId() + "," + task.getTypeTask() + "," + task.getTitle() + "," + task.getStatus()
-                + "," + task.getDescription();
-        if (task.getTypeTask() == TypeTask.SUBTASK) {
-            SubTask subTask = (SubTask) task;
-            line = line + "," + subTask.getEpicId();
-        }
-        return line;
-    }
-
     private static Task taskFromString(String line) {
         String[] split = line.split(",");
         int id = Integer.parseInt(split[0]);
@@ -68,7 +58,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static List<Integer> historyFromString(String line) {
         List<Integer> taskIdInHistory = new ArrayList<>();
-        if (!line.isBlank() && !line.isEmpty()) {
+        if (!line.isBlank()) {
             String[] arrayLine = line.split(" ");
             for (String s : arrayLine) {
                 taskIdInHistory.add(Integer.parseInt(s));
@@ -77,14 +67,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return taskIdInHistory;
     }
 
-    private void recoverIdAndSubTaskInEpic(Map<Integer, Task> tasks) {
+    private void recoverId(Map<Integer, Task> tasks) {
         int maxId = 0;
         for (Task task : tasks.values()) {
-
             if (task.getId() > maxId) {
                 maxId = task.getId();
             }
+        }
+        super.setId(maxId + 1);
+    }
 
+    private void recoverSubTasksInEpics(Map<Integer, Task> tasks) {
+        for (Task task : tasks.values()) {
             if (task.getTypeTask() == TypeTask.SUBTASK) {
                 SubTask subTask = (SubTask) task;
                 Epic epic = (Epic) tasks.get(subTask.getEpicId());
@@ -92,7 +86,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 super.updateEpicStatus(epic);
             }
         }
-        super.setId(maxId + 1);
     }
 
     private void recoverHistory(List<Integer> ids, Map<Integer, Task> tasks, HistoryManager historyManager) {
@@ -107,17 +100,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
              BufferedWriter bwHistory = new BufferedWriter(new FileWriter(dataHistory.toFile()))) {
             bw.write(tittle + "\n");
             for (Task task : super.getTasks()) {
-                bw.write(taskToString(task) + "\n");
+                bw.write(task.toStringForSave() + "\n");
             }
             for (Epic epic : super.getEpics()) {
-                bw.write(taskToString(epic) + "\n");
+                bw.write(epic.toStringForSave() + "\n");
             }
             for (SubTask subTask : super.getSubTasks()) {
-                bw.write(taskToString(subTask) + "\n");
+                bw.write(subTask.toStringForSave() + "\n");
             }
             StringBuilder builder = new StringBuilder();
-            for (Integer id : super.getHistoryIds()) {
-                builder.append(id).append(" ");
+            for (Task task : super.historyManager.getHistory()) {
+                builder.append(task.getId()).append(" ");
             }
             bwHistory.write(builder.toString());
         } catch (IOException e) {
@@ -136,7 +129,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 manager.putInMaps(task);
                 tasks.put(task.getId(), task);
             }
-            manager.recoverIdAndSubTaskInEpic(tasks);
+            manager.recoverId(tasks);
+            manager.recoverSubTasksInEpics(tasks);
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при чтении файла: " + data.getFileName());
         }

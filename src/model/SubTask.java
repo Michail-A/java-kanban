@@ -34,4 +34,9 @@ public class SubTask extends Task {
                 ", epicId='" + epicId + '\'' +
                 '}';
     }
+
+    @Override
+    public String toStringForSave() {
+        return super.toStringForSave() + "," + epicId;
+    }
 }

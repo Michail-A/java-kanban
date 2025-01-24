@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private int id = 0;
-    private final HistoryManager historyManager;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -196,14 +196,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer id : ids) {
             historyManager.remove(id);
         }
-    }
-
-    protected List<Integer> getHistoryIds() {
-        List<Integer> historyIds = new ArrayList<>();
-        for (Task task : historyManager.getHistory()) {
-            historyIds.add(task.getId());
-        }
-        return historyIds;
     }
 
     protected void putInMaps(Task task) {

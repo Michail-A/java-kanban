@@ -48,7 +48,7 @@ class FileBackedTaskManagerTest {
         assertIterableEquals(equalManager.getTasks(), testManager.getTasks());
         assertIterableEquals(equalManager.getEpics(), testManager.getEpics());
         assertIterableEquals(equalManager.getSubTasks(), testManager.getSubTasks());
-        assertIterableEquals(equalManager.getHistoryIds(), testManager.getHistoryIds());
+        assertIterableEquals(equalManager.historyManager.getHistory(), testManager.historyManager.getHistory());
         assertEquals(equalManager.getId(), testManager.getId());
     }
 }
