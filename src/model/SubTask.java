@@ -1,5 +1,7 @@
 package model;
 
+import manager.TypeTask;
+
 public class SubTask extends Task {
     private final int epicId;
 
@@ -8,13 +10,18 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-    public SubTask(String title, String description, int id, Status status, int epicId) {
-        super(title, description, id, status);
+    public SubTask(int id, String title, String description, Status status, int epicId) {
+        super(id, title, description, status);
         this.epicId = epicId;
     }
 
     public int getEpicId() {
         return epicId;
+    }
+
+    @Override
+    public TypeTask getTypeTask() {
+        return TypeTask.SUBTASK;
     }
 
     @Override
@@ -26,5 +33,10 @@ public class SubTask extends Task {
                 ", status='" + this.getStatus() + '\'' +
                 ", epicId='" + epicId + '\'' +
                 '}';
+    }
+
+    @Override
+    public String toStringForSave() {
+        return super.toStringForSave() + "," + epicId;
     }
 }

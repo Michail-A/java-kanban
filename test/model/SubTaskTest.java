@@ -12,8 +12,8 @@ class SubTaskTest {
 
     @BeforeAll
     static void beforeAll() {
-        subTask1 = new SubTask("test", "test", 1, Status.NEW, 1);
-        subTask2 = new SubTask("test1", "test1", 1, Status.DONE, 11);
+        subTask1 = new SubTask(1, "test", "test", Status.NEW, 1);
+        subTask2 = new SubTask(1, "test1", "test1", Status.DONE, 11);
     }
 
     @Test

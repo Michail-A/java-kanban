@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private int id = 0;
-    private final HistoryManager historyManager;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -166,7 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-    public void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatus(Epic epic) {
         if (epic.getIdSubTasks().isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
@@ -196,5 +196,27 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer id : ids) {
             historyManager.remove(id);
         }
+    }
+
+    protected void putInMaps(Task task) {
+        switch (task.getTypeTask()) {
+            case TASK:
+                tasks.put(task.getId(), task);
+                break;
+            case EPIC:
+                epics.put(task.getId(), (Epic) task);
+                break;
+            case SUBTASK:
+                subTasks.put(task.getId(), (SubTask) task);
+                break;
+        }
+    }
+
+    protected void setId(int id) {
+        this.id = id;
+    }
+
+    protected int getId() {
+        return id;
     }
 }

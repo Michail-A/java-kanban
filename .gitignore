@@ -18,6 +18,11 @@
 *.zip
 *.tar.gz
 *.rar
+*.csv
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/src/data.csv
+/src/data_history.csv
+/out/production/java-kanban/data.csv
+/out/production/java-kanban/data_history.csv
