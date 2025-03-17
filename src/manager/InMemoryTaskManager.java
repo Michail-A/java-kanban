@@ -128,7 +128,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        checkIntersection(task);
         tasks.put(task.getId(), task);
         if (task.getStartTime() != null) {
             prioritizedTasks.add(task);
@@ -144,7 +143,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(SubTask subTask) {
-        checkIntersection(subTask);
         SubTask oldSubTask = subTasks.get(subTask.getId());
         subTasks.put(subTask.getId(), subTask);
         Epic epic = epics.get(subTask.getEpicId());
@@ -222,7 +220,6 @@ public class InMemoryTaskManager implements TaskManager {
         calculateEpicTime(epic);
     }
 
-    @Override
     public List<Task> getPrioritizedTasks() {
         return prioritizedTasks.stream().toList();
     }
@@ -255,8 +252,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void deleteFormPrioritizedTasks(List<Task> tasks) {
-        tasks.stream()
-                .peek(prioritizedTasks::remove);
+        tasks.forEach(prioritizedTasks::remove);
     }
 
     protected void putInMaps(Task task) {
@@ -289,23 +285,12 @@ public class InMemoryTaskManager implements TaskManager {
     public void checkIntersection(Task task) {
 
         for (Task task1 : prioritizedTasks) {
-            if (task1.getStartTime().isBefore(task.getStartTime()) && task.getStartTime().isBefore(task1.getEndTime())) {
-                throw new IllegalArgumentException("Время задачи уже занято");
-            }
-            if (task1.getStartTime().isAfter(task.getStartTime()) && task.getStartTime().isBefore(task1.getEndTime())) {
-                throw new IllegalArgumentException("Время  задачи уже занято");
-            }
-            if (task.getStartTime().isBefore(task1.getStartTime()) && task.getEndTime().isAfter(task1.getEndTime())) {
-                throw new IllegalArgumentException("Время  задачи уже занято");
-            }
-            if (task.getStartTime().isAfter(task1.getStartTime()) && task.getEndTime().isBefore(task1.getEndTime())) {
-                throw new IllegalArgumentException("Время  задачи уже занято");
-            }
-            if (task.getStartTime().equals(task1.getStartTime())) {
+            boolean isIntersection = task.getStartTime().isAfter(task1.getEndTime())
+                    || task.getEndTime().isBefore(task1.getStartTime());
+
+            if (!isIntersection) {
                 throw new IllegalArgumentException("Время  задачи уже занято");
             }
         }
     }
-
-
 }

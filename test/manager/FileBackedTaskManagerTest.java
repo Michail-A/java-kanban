@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class FileBackedTaskManagerTest extends TaskManagerTest {
@@ -41,7 +40,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertIterableEquals(equalManager.getEpics(), manager.getEpics());
         assertIterableEquals(equalManager.getSubTasks(), manager.getSubTasks());
         assertIterableEquals(equalManager.getHistory(), manager.getHistory());
-        assertEquals(equalManager.getId(), manager.getId());
     }
 
     @Test
@@ -59,7 +57,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertIterableEquals(equalManager.getEpics(), manager.getEpics());
         assertIterableEquals(equalManager.getSubTasks(), manager.getSubTasks());
         assertIterableEquals(equalManager.getHistory(), manager.getHistory());
-        assertEquals(equalManager.getId(), manager.getId());
     }
 
 }
