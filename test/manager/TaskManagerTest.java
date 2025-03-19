@@ -323,5 +323,24 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(manager.getTasks().size(), 1);
     }
 
+    @Test
+    void checkIntersectionNewTaskStartInEndCurrent() {
+        task1 = new Task("Current", "Current", Duration.ofMinutes(30L), LocalDateTime.now());
+        task2 = new Task("NewTask", "NewTask", Duration.ofMinutes(30L), task1.getEndTime());
+        manager.addTask(task1);
+
+        assertDoesNotThrow(() -> manager.addTask(task2));
+    }
+
+    @Test
+    void checkIntersectionNewTaskEndInStartCurrent() {
+        task1 = new Task("Current", "Current", Duration.ofMinutes(30L), LocalDateTime.now());
+        task2 = new Task("NewTask", "NewTask", Duration.ofMinutes(30L),
+                task1.getStartTime().minus(Duration.ofMinutes(30L)));
+        manager.addTask(task1);
+
+        assertDoesNotThrow(() -> manager.addTask(task2));
+    }
+
 
 }
