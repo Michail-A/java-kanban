@@ -342,5 +342,38 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertDoesNotThrow(() -> manager.addTask(task2));
     }
 
+    @Test
+    void whenTimeIsNotChangedOnUpdateThenResponseOk() {
+        task1 = new Task("Current", "Current", Duration.ofMinutes(30L), LocalDateTime.now());
+        task2 = new Task("NewTask", "NewTask", Duration.ofMinutes(30L),
+                task1.getStartTime().minus(Duration.ofMinutes(30L)));
+        manager.addTask(task1);
+        manager.addTask(task2);
+        var updatedTask2Title = "Updated task2 title";
+        var taskToUpdate = new Task(task2.getId(), updatedTask2Title, task2.getDescription(), task2.getDuration(), task2.getStartTime());
+        manager.updateTask(taskToUpdate);
 
+        var updatedTask = manager.getTaskById(task2.getId());
+
+        assertEquals(updatedTask2Title, updatedTask.getTitle());
+    }
+
+    @Test
+    void whenNewTimeHasIntersectionWithOldTimeOnUpdateThenResponseOk() {
+        task1 = new Task("Current", "Current", Duration.ofMinutes(30L), LocalDateTime.now());
+        task2 = new Task("NewTask", "NewTask", Duration.ofMinutes(30L),
+                task1.getStartTime().minus(Duration.ofMinutes(30L)));
+        manager.addTask(task1);
+        manager.addTask(task2);
+        var newTitle = "Updated task2 title";
+        var newStartTime = task2.getStartTime().minus(Duration.ofMinutes(15L));
+        var taskToUpdate = new Task(task2.getId(), newTitle, task2.getDescription(), task2.getDuration(),
+                newStartTime);
+        manager.updateTask(taskToUpdate);
+
+        var updatedTask = manager.getTaskById(task2.getId());
+
+        assertEquals(newTitle, updatedTask.getTitle());
+        assertEquals(newStartTime, updatedTask.getStartTime());
+    }
 }

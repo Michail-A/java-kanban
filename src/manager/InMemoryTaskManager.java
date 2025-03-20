@@ -132,11 +132,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        prioritizedTasks.remove(tasks.get(task.getId()));
         if (task.getStartTime() != null) {
             checkIntersection(task);
         }
         tasks.put(task.getId(), task);
-        prioritizedTasks.remove(task);
         if (task.getStartTime() != null) {
             prioritizedTasks.add(task);
         }
@@ -297,11 +297,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void checkIntersection(Task task) {
 
         for (Task task1 : prioritizedTasks) {
-            boolean noIntersection =
-                    (task.getStartTime().isAfter(task1.getEndTime()) || task.getStartTime().equals(task1.getEndTime()))
-                            || (task.getEndTime().isBefore(task1.getStartTime())
-                            || task.getEndTime().equals(task1.getStartTime()));
-
+            boolean noIntersection = !task.getStartTime().isBefore(task1.getEndTime()) || !task.getEndTime().isAfter(task1.getStartTime());
             if (!noIntersection) {
                 throw new IllegalArgumentException("Время  задачи уже занято");
             }
