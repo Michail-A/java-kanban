@@ -2,8 +2,21 @@ package model;
 
 import manager.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
-    private final int epicId;
+    private int epicId;
+
+    public SubTask(String title, String description, int epicId, Duration duration, LocalDateTime startTime) {
+        super(title, description, duration, startTime);
+        this.epicId = epicId;
+    }
+
+    public SubTask(int id, String title, String description, Status status, int epicId, Duration duration, LocalDateTime startTime) {
+        super(id, title, description, status, duration, startTime);
+        this.epicId = epicId;
+    }
 
     public SubTask(String title, String description, int epicId) {
         super(title, description);
@@ -17,6 +30,10 @@ public class SubTask extends Task {
 
     public int getEpicId() {
         return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override

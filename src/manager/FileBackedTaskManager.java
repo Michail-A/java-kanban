@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,16 +43,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String title = split[2];
         Status status = Status.valueOf(split[3]);
         String description = split[4];
+        Duration duration = null;
+        LocalDateTime startTime = null;
+        int epicId = 0;
+        if (split.length > 8) {
+            epicId = Integer.parseInt(split[8]);
+        }
+        if (!split[5].equals("null")) {
+            duration = Duration.parse(split[5]);
+        }
+        if (!split[6].equals("null")) {
+            startTime = LocalDateTime.parse(split[6]);
+        }
+
         Task task = null;
         switch (type) {
             case TASK:
-                task = new Task(id, title, description, status);
+                task = new Task(id, title, description, status, duration, startTime);
                 break;
             case EPIC:
                 task = new Epic(id, title, description);
                 break;
             case SUBTASK:
-                task = new SubTask(id, title, description, status, Integer.parseInt(split[5]));
+                task = new SubTask(id, title, description, status, epicId, duration, startTime);
                 break;
         }
         return task;
@@ -94,8 +109,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    private void recoverPrioritizedTasks() {
+        super.getTasks().stream()
+                .filter(t -> t.getStartTime() != null)
+                .peek(prioritizedTasks::add);
+
+        super.getSubTasks().stream()
+                .filter(s -> s.getStartTime() != null)
+                .peek(prioritizedTasks::add);
+
+    }
+
     private void save() {
-        String tittle = "id,type,title,status,description,epicId";
+        String tittle = "id,type,title,status,description,duration,startTime,endTime,epicId";
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(data.toFile()));
              BufferedWriter bwHistory = new BufferedWriter(new FileWriter(dataHistory.toFile()))) {
             bw.write(tittle + "\n");
@@ -141,6 +167,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при чтении файла: " + dataHistory.getFileName());
         }
+        manager.recoverPrioritizedTasks();
         return manager;
     }
 
