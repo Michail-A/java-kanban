@@ -2,6 +2,7 @@ package model;
 
 import manager.TypeTask;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class Epic extends Task {
     private List<Integer> idSubTasks;
 
     public Epic(String title, String description) {
-        super(title, description, null, null);
+        super(title, description, Duration.ofMinutes(0), null);
         idSubTasks = new ArrayList<>();
     }
 
