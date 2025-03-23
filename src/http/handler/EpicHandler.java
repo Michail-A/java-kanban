@@ -23,21 +23,22 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange h) throws IOException {
         String method = h.getRequestMethod();
-        Optional<Integer> idOpt = getIdFromPath(h);
+        Optional<Integer> idOpt = getIdFromPathWhereThirdPlace(h);
+        int id = idOpt.orElse(-1);
         String[] pathParts = h.getRequestURI().getPath().split("/");
         switch (method) {
             case "GET":
-                if (idOpt.isEmpty()) {
+                if (id < 0) {
                     List<Epic> epics = manager.getEpics();
                     sendText(h, gson.toJson(epics));
                 } else {
-                    Epic epic = manager.getEpicById(idOpt.get());
+                    Epic epic = manager.getEpicById(id);
                     if (epic == null) {
                         sendNotFound(h);
                         return;
                     }
                     if (pathParts.length > 3) {
-                        List<SubTask> subTasks = manager.getSubTasksByEpicId(idOpt.get());
+                        List<SubTask> subTasks = manager.getSubTasksByEpicId(id);
                         sendText(h, gson.toJson(subTasks));
                     } else {
                         sendText(h, gson.toJson(epic));
@@ -53,7 +54,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 break;
 
             case "DELETE":
-                manager.deleteEpicById(idOpt.get());
+                manager.deleteEpicById(id);
                 sendText(h, "Задача удалена");
                 break;
         }

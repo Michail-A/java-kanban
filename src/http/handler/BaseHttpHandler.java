@@ -7,6 +7,7 @@ import http.adapter.DurationAdapter;
 import http.adapter.LocalDateTimeAdapter;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,25 +16,27 @@ import java.util.Optional;
 public class BaseHttpHandler {
 
     protected void sendText(HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(200, resp.length);
-        h.getResponseBody().write(resp);
-        h.close();
+        h.sendResponseHeaders(200, 0);
+        try (OutputStream os = h.getResponseBody()) {
+            os.write(text.getBytes());
+        }
     }
 
     protected void sendNotFound(HttpExchange h) throws IOException {
         h.sendResponseHeaders(404, 0);
         h.close();
+
     }
 
     protected void sendHasIntersection(HttpExchange h) throws IOException {
         h.sendResponseHeaders(404, 0);
-        h.getResponseBody().write("Есть пересечения по времени с текущими задачами".getBytes(StandardCharsets.UTF_8));
-        h.close();
+        try (OutputStream os = h.getResponseBody()) {
+            os.write("Есть пересечения по времени с текущими задачами".getBytes());
+        }
     }
 
-    protected Optional<Integer> getIdFromPath(HttpExchange h) {
+    protected Optional<Integer> getIdFromPathWhereThirdPlace(HttpExchange h) {
         String path = h.getRequestURI().getPath();
         String[] partsPath = path.split("/");
         try {
@@ -44,10 +47,11 @@ public class BaseHttpHandler {
     }
 
     protected void sendResponse(HttpExchange h, String text, int responseCode) throws IOException {
-        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(responseCode, 0);
-        h.close();
+        try (OutputStream os = h.getResponseBody()) {
+            os.write(text.getBytes());
+        }
     }
 
     protected String readText(HttpExchange h) throws IOException {

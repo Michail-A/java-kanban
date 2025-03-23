@@ -22,16 +22,15 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange h) throws IOException {
         String method = h.getRequestMethod();
-        Optional<Integer> idOpt = getIdFromPath(h);
-
+        Optional<Integer> idOpt = getIdFromPathWhereThirdPlace(h);
+        int id = idOpt.orElse(-1);
         switch (method) {
             case "GET":
-                if (idOpt.isEmpty()) {
+                if (id < 0) {
                     List<Task> tasks = manager.getTasks();
                     String response = gson.toJson(tasks);
                     sendText(h, response);
                 } else {
-                    int id = idOpt.get();
                     Task task = manager.getTaskById(id);
                     if (task == null) {
                         sendNotFound(h);
@@ -58,7 +57,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 break;
 
             case "DELETE":
-                manager.deleteTaskById(idOpt.get());
+                manager.deleteTaskById(id);
                 sendText(h, "Задача удалена");
                 break;
         }

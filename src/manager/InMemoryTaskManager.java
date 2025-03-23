@@ -115,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(SubTask subTask) {
         if (!(epics.containsKey(subTask.getEpicId()))) {
             System.out.println("Эпика с id=" + subTask.getEpicId() + " не существует");
-            throw new EpicNotFoundException();
+            throw new EpicNotFoundException("Epic id" + subTask.getEpicId());
         }
         subTask.setId(id);
         if (subTask.getStartTime() != null) {

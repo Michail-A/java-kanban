@@ -24,16 +24,15 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange h) throws IOException {
         String method = h.getRequestMethod();
-        Optional<Integer> idOpt = getIdFromPath(h);
-
+        Optional<Integer> idOpt = getIdFromPathWhereThirdPlace(h);
+        int id = idOpt.orElse(-1);
         switch (method) {
             case "GET":
-                if (idOpt.isEmpty()) {
+                if (id < 0) {
                     List<SubTask> subtasks = manager.getSubTasks();
                     String response = gson.toJson(subtasks);
                     sendText(h, response);
                 } else {
-                    int id = idOpt.get();
                     SubTask subTask = manager.getSubTaskById(id);
                     if (subTask == null) {
                         sendNotFound(h);
@@ -62,7 +61,7 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
                 break;
 
             case "DELETE":
-                manager.deleteSubTasksById(idOpt.get());
+                manager.deleteSubTasksById(id);
                 sendText(h, "Подзадача удалена");
                 break;
         }

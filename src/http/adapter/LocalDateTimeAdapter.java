@@ -3,6 +3,7 @@ package http.adapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import exception.LocalDateTimeParseException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,10 +23,11 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) {
-
         try {
             return LocalDateTime.parse(jsonReader.nextString(), formatter);
         } catch (Exception e) {
+            throw new LocalDateTimeParseException("Ошибка формата при парсинге строки");
+        } finally {
             return null;
         }
 
