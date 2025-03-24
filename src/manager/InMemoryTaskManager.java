@@ -1,5 +1,6 @@
 package manager;
 
+import exception.EpicNotFoundException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -13,7 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
-    private int id = 0;
+    private int id = 1;
     protected final HistoryManager historyManager;
     protected final Set<Task> prioritizedTasks = new TreeSet<>((Task t1, Task t2) -> {
         if (t1.getStartTime().isBefore(t2.getStartTime())) {
@@ -114,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(SubTask subTask) {
         if (!(epics.containsKey(subTask.getEpicId()))) {
             System.out.println("Эпика с id=" + subTask.getEpicId() + " не существует");
-            return;
+            throw new EpicNotFoundException("Epic id" + subTask.getEpicId());
         }
         subTask.setId(id);
         if (subTask.getStartTime() != null) {
@@ -232,6 +233,7 @@ public class InMemoryTaskManager implements TaskManager {
         calculateEpicTime(epic);
     }
 
+    @Override
     public List<Task> getPrioritizedTasks() {
         return prioritizedTasks.stream().toList();
     }
